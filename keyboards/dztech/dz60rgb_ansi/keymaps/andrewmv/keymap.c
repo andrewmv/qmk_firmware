@@ -10,11 +10,11 @@ const int AUX_INDICATOR[] = {1, 2, 3};
 const int AUX_IND_COUNT = 3;
 const int MEDIA_INDICATOR[] = {12, 11, 10, 9, 7, 6, 43, 44, 57};
 const int MEDIA_IND_COUNT = 9;
-const int RGBCTL_INDICATOR[] = {18, 19, 20, 21, 22, 23, 24, 26, 31, 32};
+const int RGBCTL_INDICATOR[] = {26, 24, 22, 20, 19, 18, 37, 35, 33, 32};
 const int RGBCTL_IND_COUNT = 10;
 
-const int GESC_INDICATOR = 0;
-const int RESET_INDICATOR = 27;
+const int GESC_INDICATOR[] = {0};
+const int RESET_INDICATOR[] = {14};
 
 #define FKEY_COLOR     RGB_MAGENTA
 #define ESC_COLOR      RGB_RED
@@ -27,6 +27,8 @@ const int RESET_INDICATOR = 27;
 #define RGBCTL_COLOR   RGB_PURPLE
 
 #define DYNAMIC_KEYMAP_LAYER_COUNT 3
+
+/*** RGB STUFF ***/
 
 void rgb_matrix_indicate_function(uint8_t led_min, uint8_t led_max, const int keyset[], const int keycount, int r, int g, int b) {
     for (int i = 0; i < keycount; i++) {
@@ -46,28 +48,41 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         rgb_matrix_indicate_function(led_min, led_max, MEDIA_INDICATOR, MEDIA_IND_COUNT, MEDIA_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, RGBCTL_INDICATOR, RGBCTL_IND_COUNT, RGBCTL_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, AUX_INDICATOR, AUX_IND_COUNT, AUX_COLOR);
+        rgb_matrix_indicate_function(led_min, led_max, RESET_INDICATOR, 1, RESET_COLOR);
     }
 }
 
+//*** TAP DANCE STUFF ***//
+
+enum {
+    TD_ESC_GRV,
+};
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_ESC_GRV] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_ESC),
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_60_ansi(
-        KC_GESC,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC,
+        TD(TD_ESC_GRV), KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC,
         KC_TAB,         KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS,
-        MO(1),          KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,
+        LT(1, KC_CAPS), KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,
         KC_LSFT,                 KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT,
         KC_LCTL,        KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(1),   MO(2),   KC_RCTL
     ),
     [1] = LAYOUT_60_ansi(
-        _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_PSCR,  KC_SLCK,  KC_PAUS,  KC_DEL,
+        KC_ESC, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_PSCR,  KC_SLCK,  KC_PAUS,  KC_DEL,
         _______, _______, _______, KC_END,  KC_INS,  _______, _______, _______, _______,  _______,KC_PGUP, _______, _______, _______,
         _______, KC_HOME, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT,_______, _______,          _______,
-        _______,          _______, _______, _______, _______, _______, _______, KC_PGDN, _______, _______, _______,          _______,
+        _______,          _______, _______, _______, _______, _______, KC_PGDN, _______, _______, _______, _______,          _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, _______
     ),
     [2] = LAYOUT_60_ansi(
-        _______, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, _______, KC_BRID, KC_BRIU, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______,
-        _______, RGB_TOG, _______, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, RGB_MOD, _______, _______, _______, RESET,
-        _______, _______, _______, _______, _______, _______, _______, _______, RGB_SPI, RGB_SPD, _______, _______,          _______,
+        KC_ESC, KC_MUTE, KC_VOLD, KC_VOLU, KC_MPLY, _______, KC_BRID, KC_BRIU, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______,
+        _______, RGB_TOG, _______, RGB_HUI, _______, RGB_SAI, _______, RGB_VAI, RGB_SPI, RGB_MOD, _______, _______, _______, RESET,
+        _______, _______, _______, RGB_HUD, _______, RGB_SAD, _______, RGB_VAD, RGB_SPD, _______, _______, _______,          _______,
         _______,          _______, _______, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, _______,          _______,
         _______, _______, _______,                            KC_MPLY,                            _______, _______, _______, _______
     )
