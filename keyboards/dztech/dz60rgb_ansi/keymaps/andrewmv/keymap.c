@@ -17,6 +17,13 @@ const int GESC_INDICATOR[] = {13};
 const int GRV_INDICATOR[] = {14};
 const int RESET_INDICATOR[] = {14};
 
+// Key Overrides
+const key_override_t esc_key_override = ko_make_basic(MOD_MASK_ALT, KC_GESC, A(KC_GRV));
+const key_override_t **key_overrides = (const key_override_t *[]) {
+    &esc_key_override,
+    NULL
+};
+
 #define FKEY_COLOR     RGB_MAGENTA
 #define ESC_COLOR      RGB_RED
 #define GRV_COLOR      RGB_ORANGE
@@ -41,13 +48,13 @@ void rgb_matrix_indicate_function(uint8_t led_min, uint8_t led_max, const int ke
 
 // Highlight function changes in layers.
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-    if (layer_state_is(1)) {
+    if (layer_state_is(1)) {    // Navigation Layer
         rgb_matrix_indicate_function(led_min, led_max, FKEY_INDICATOR, FKEY_IND_COUNT, FKEY_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, PAGE_INDICATOR, PAGE_IND_COUNT, PAGE_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, ARROW_INDICATOR, ARROW_IND_COUNT, ARROW_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, GESC_INDICATOR, 1, ESC_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, GRV_INDICATOR, 1, GRV_COLOR);
-    } else if (layer_state_is(2)) {
+    } else if (layer_state_is(2)) { // Media and Meta layer
         rgb_matrix_indicate_function(led_min, led_max, MEDIA_INDICATOR, MEDIA_IND_COUNT, MEDIA_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, RGBCTL_INDICATOR, RGBCTL_IND_COUNT, RGBCTL_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, AUX_INDICATOR, AUX_IND_COUNT, AUX_COLOR);
@@ -58,15 +65,15 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
 //*** TAP DANCE STUFF ***//
 
-enum {
-    TD_ESC_GRV,
-};
+// enum {
+//     TD_ESC_GRV,
+// };
 
-// Tap Dance definitions
-qk_tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Escape, twice for Caps Lock
-    [TD_ESC_GRV] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_ESC),
-};
+// // Tap Dance definitions
+// qk_tap_dance_action_t tap_dance_actions[] = {
+//     // Tap once for Escape, twice for Caps Lock
+//     [TD_ESC_GRV] = ACTION_TAP_DANCE_DOUBLE(KC_GRV, KC_ESC),
+// };
 
 // 0: BASE LAYER
 // 1: NAV LAYER
@@ -80,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL,        KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(1),   MO(2),   KC_RCTL
     ),
     [1] = LAYOUT_60_ansi(
-        KC_ESC, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_PSCR,  KC_SLCK,  KC_PAUS,  KC_DEL,
+        KC_ESC, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,  KC_F12,  KC_DEL,
         _______, _______, _______, KC_END,  KC_INS,  _______, _______, _______, _______,  _______,KC_PGUP, _______, _______, KC_GRV,
         _______, KC_HOME, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RIGHT,_______, _______,          _______,
         _______,          _______, _______, _______, _______, _______, KC_PGDN, _______, _______, _______, _______,          _______,
