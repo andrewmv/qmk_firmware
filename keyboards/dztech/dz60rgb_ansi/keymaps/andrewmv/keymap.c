@@ -18,10 +18,9 @@ const int GRV_INDICATOR[] = {14};
 const int RESET_INDICATOR[] = {14};
 
 // Key Overrides
-const key_override_t esc_key_override = ko_make_basic(MOD_MASK_ALT, KC_GESC, A(KC_GRV));
-const key_override_t **key_overrides = (const key_override_t *[]) {
-    &esc_key_override,
-    NULL
+const key_override_t esc_key_override = ko_make_basic(MOD_MASK_ALT, QK_GESC, A(KC_GRV));
+const key_override_t *key_overrides[] = {
+    &esc_key_override
 };
 
 #define FKEY_COLOR     RGB_MAGENTA
@@ -47,7 +46,7 @@ void rgb_matrix_indicate_function(uint8_t led_min, uint8_t led_max, const int ke
 }
 
 // Highlight function changes in layers.
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     if (layer_state_is(1)) {    // Navigation Layer
         rgb_matrix_indicate_function(led_min, led_max, FKEY_INDICATOR, FKEY_IND_COUNT, FKEY_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, PAGE_INDICATOR, PAGE_IND_COUNT, PAGE_COLOR);
@@ -61,6 +60,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         rgb_matrix_indicate_function(led_min, led_max, RESET_INDICATOR, 1, RESET_COLOR);
         rgb_matrix_indicate_function(led_min, led_max, GESC_INDICATOR, 1, GRV_COLOR);
     }
+    return false;
 }
 
 // 0: BASE LAYER
@@ -68,7 +68,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 // 2: MEDIA LAYER
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_60_ansi(
-        KC_GESC,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC,
+        QK_GESC,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC,
         KC_TAB,         KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS,
         LT(1, KC_CAPS), KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,
         KC_LSFT,                 KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT,
@@ -82,8 +82,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______,                            _______,                            _______, _______, _______, _______
     ),
     [2] = LAYOUT_60_ansi(
-        KC_GRV,  _______, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_BRID, KC_BRIU, _______, _______, KC_PSCR, KC_SLCK, KC_PAUS, _______,
-        RGB_TOG, _______, RGB_HUI, _______, RGB_SAI, _______, RGB_VAI, _______, RGB_SPI, _______, RGB_MOD, _______, _______, RESET,
+        KC_GRV,  _______, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_BRID, KC_BRIU, _______, _______, KC_PSCR, KC_SCRL, KC_PAUS, _______,
+        RGB_TOG, _______, RGB_HUI, _______, RGB_SAI, _______, RGB_VAI, _______, RGB_SPI, _______, RGB_MOD, _______, _______, QK_BOOT,
         _______, _______, RGB_HUD, _______, RGB_SAD, _______, RGB_VAD, _______, RGB_SPD, _______, _______, _______,          _______,
         _______,          _______, _______, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, _______,          _______,
         _______, _______, _______,                            KC_MPLY,                            _______, _______, _______, _______
